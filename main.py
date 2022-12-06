@@ -66,8 +66,6 @@ def transaction_successful(drink, coins_inserted):
         return True
 
 
-
-
 resources = {
     "water": 300,
     "milk": 200,
