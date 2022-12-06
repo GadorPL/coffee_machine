@@ -26,9 +26,8 @@ MENU = {
 
 
 def report(resource):
-    print(f"Water: {resource['water']}ml\nMilk: {resource['milk']}ml\nCoffee: {resource['coffee']}g")
-    if "money" in resource:
-        print(f"Money: ${'money'}")
+    print(f"Water: {resource['water']}ml\nMilk: {resource['milk']}ml\nCoffee: {resource['coffee']}g"
+          f"\nMoney: ${resource['money']}")
 
 
 def enough_ingredients(drink, resource_dict):
@@ -62,14 +61,21 @@ def transaction_successful(drink, coins_inserted):
         resources["money"] += MENU[drink]["cost"]
         if coins_inserted > MENU[drink]["cost"]:
             coins_surplus = coins_inserted - MENU[drink]["cost"]
-            print(f"Here is ${coins_surplus} in change.")
+            print(f"Here is ${'{:.2f}'.format(coins_surplus)} in change.")
         return True
+
+
+def make_coffee(drink, resource_dict):
+    for item in MENU[drink]["ingredients"]:
+        resource_dict[item] -= MENU[drink]["ingredients"][item]
+    print(f"Here is your {drink}☕. Enjoy!")
 
 
 resources = {
     "water": 300,
     "milk": 200,
     "coffee": 100,
+    "money": 0,
 }
 
 machine_on = True
@@ -79,20 +85,11 @@ while machine_on:
         machine_on = False
     elif order == 'report':
         report(resources)
-
-    if enough_ingredients(order, resources):
-        print("Please insert coins.")
-        if transaction_successful(order, coins()):
-            pass
     else:
-        machine_on = False
-
-
-# TODO: 1. Prompt user by asking “What would you like? (espresso/latte/cappuccino):
-# TODO: 2. Turn off the machine by enetering "off" to a prompt.
-# TODO: 3. Print report of all coffee machine's resources after enetering "report" to a prompt.
-# TODO: 4. Check if the resources are sufficient after user chose drink.
-# TODO: 5. Process coins
-# TODO: 6. Check if transaction is successful
-# TODO: 7. Make coffee
+        if enough_ingredients(order, resources):
+            print("Please insert coins.")
+            if transaction_successful(order, coins()):
+                make_coffee(order, resources)
+        else:
+            machine_on = False
 
